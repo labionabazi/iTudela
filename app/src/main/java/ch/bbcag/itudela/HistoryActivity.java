@@ -19,19 +19,16 @@ public class HistoryActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_search:
-                    mTextMessage.setText("Search");
                     Intent search = new Intent(getApplicationContext(), SearchActivity.class);
                     search.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(search);
                     return true;
                 case R.id.navigation_history:
-                    mTextMessage.setText("History");
                     Intent history = new Intent(getApplicationContext(), HistoryActivity.class);
                     history.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(history);
                     return true;
                 case R.id.navigation_music:
-                    mTextMessage.setText("Now Playing");
                     Intent nowplaying = new Intent(getApplicationContext(), NowPlayingActivity.class);
                     nowplaying.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(nowplaying);
