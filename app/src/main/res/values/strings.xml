@@ -1,11 +1,10 @@
 <resources>
     <string name="app_name">iTudela</string>
-    <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
 
 
     <string name="title_search">Search</string>
     <string name="title_history">History</string>
-    <string name="title_playingmusic">Playing Music</string>
+    <string name="title_nowplaying">Now Playing</string>
 </resources>

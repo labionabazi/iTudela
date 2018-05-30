@@ -1,13 +1,14 @@
 package ch.bbcag.itudela;
 
-import android.os.Bundle;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class HistoryActivity extends AppCompatActivity {
 
     private TextView mTextMessage;
 
@@ -17,14 +18,23 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.navigation_home:
+                case R.id.navigation_search:
                     mTextMessage.setText("Search");
+                    Intent search = new Intent(getApplicationContext(), SearchActivity.class);
+                    search.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(search);
                     return true;
-                case R.id.navigation_dashboard:
+                case R.id.navigation_history:
                     mTextMessage.setText("History");
+                    Intent history = new Intent(getApplicationContext(), HistoryActivity.class);
+                    history.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(history);
                     return true;
-                case R.id.navigation_notifications:
+                case R.id.navigation_music:
                     mTextMessage.setText("Now Playing");
+                    Intent nowplaying = new Intent(getApplicationContext(), NowPlayingActivity.class);
+                    nowplaying.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(nowplaying);
                     return true;
             }
             return false;
@@ -34,11 +44,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_history);
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setSelectedItemId(R.id.navigation_history);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
-
 }
