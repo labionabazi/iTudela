@@ -5,6 +5,7 @@ public class VideoItem {
     private String description;
     private String thumbnailURL;
     private String id;
+    private Long db_id;
 
     public String getId() {
         return id;
@@ -38,4 +39,11 @@ public class VideoItem {
         this.thumbnailURL = thumbnail;
     }
 
+    public Long getDb_id() {
+        return db_id;
+    }
+
+    public void setDb_id(Long db_id) {
+        this.db_id = db_id;
+    }
 }

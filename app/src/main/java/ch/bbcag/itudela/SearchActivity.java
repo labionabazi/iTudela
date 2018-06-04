@@ -34,37 +34,17 @@ public class SearchActivity extends AppCompatActivity {
 
     private TextView mTextMessage;
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+    private Intent search, history, nowplaying;
 
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_search:
-                    Intent search = new Intent(getApplicationContext(), SearchActivity.class);
-                    search.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(search);
-                    return true;
-                case R.id.navigation_history:
-                    Intent history = new Intent(getApplicationContext(), HistoryActivity.class);
-                    history.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(history);
-                    return true;
-                case R.id.navigation_music:
-                    Intent nowplaying = new Intent(getApplicationContext(), NowPlayingActivity.class);
-                    nowplaying.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(nowplaying);
-                    return true;
-            }
-            return false;
-        }
-    };
+    private NavigationListener mOnNavigationItemSelectedListener;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        mOnNavigationItemSelectedListener = new NavigationListener(search, history, nowplaying, getApplicationContext());
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -88,7 +68,6 @@ public class SearchActivity extends AppCompatActivity {
                 return true;
             }
         });
-
     }
 
     private List<VideoItem> searchResults;
@@ -126,7 +105,6 @@ public class SearchActivity extends AppCompatActivity {
                 return convertView;
             }
         };
-
         videosFound.setAdapter(adapter);
     }
 
@@ -140,6 +118,7 @@ public class SearchActivity extends AppCompatActivity {
                 intent.putExtra("VIDEO_ID", searchResults.get(pos).getId());
                 intent.putExtra("DESCRIPTION",searchResults.get(pos).getDescription());
                 intent.putExtra("THUMBNAILURL",searchResults.get(pos).getThumbnailURL());
+                intent.putExtra("TITLE",searchResults.get(pos).getTitle());
                 startActivity(intent);
             }
 
