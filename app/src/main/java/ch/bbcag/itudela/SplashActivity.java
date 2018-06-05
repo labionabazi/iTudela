@@ -14,9 +14,9 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 try {
                     sleep(2000);
-                    Intent splash = new Intent(SplashActivity.this, HistoryActivity.class);
-                    splash.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(splash);
+                    Intent history = new Intent(SplashActivity.this, HistoryActivity.class);
+                    history.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(history);
                     finish();
                 } catch (InterruptedException e) {
                     e.printStackTrace();

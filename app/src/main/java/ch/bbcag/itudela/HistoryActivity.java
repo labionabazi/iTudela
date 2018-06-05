@@ -30,8 +30,6 @@ public class HistoryActivity extends AppCompatActivity {
 
     private TextView mTextMessage;
 
-    private Intent search, history, nowplaying;
-
     private ListView videosReload;
 
     private List<VideoItem> VideoList;
@@ -49,21 +47,18 @@ public class HistoryActivity extends AppCompatActivity {
 
         hDbHelper = new HistoryDbHelper(getApplicationContext());
 
-        mOnNavigationItemSelectedListener = new NavigationListener(search, history, nowplaying, getApplicationContext());
+        mOnNavigationItemSelectedListener = NavigationListener.getInstance(getApplicationContext());
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setSelectedItemId(R.id.navigation_history);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        //searchInput = (EditText)findViewById(R.id.search_input);
         videosReload = (ListView) findViewById(R.id.videos_reload);
 
         VideoList = getVideoFromDB();
 
         updateVideosFound();
-
-        //loadYouTubeVideo();
 
         addClickListener();
 
@@ -100,14 +95,6 @@ public class HistoryActivity extends AppCompatActivity {
         videosReload.setAdapter(adapter);
     }
 
-    private void loadYouTubeVideo() {
-        new Thread() {
-                public void run() {
-                updateVideosFound();
-            }
-        }.start();
-    }
-
     private void addClickListener() {
         videosReload.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -124,37 +111,10 @@ public class HistoryActivity extends AppCompatActivity {
         });
     }
 
-    public void setApplicationStatus(Intent history, Intent search, Intent nowplaying){
-        this.history = history;
-        this.search = search;
-        this.nowplaying = nowplaying;
-    }
-
 
     public List<VideoItem> getVideoFromDB() {
 
         SQLiteDatabase db = hDbHelper.getWritableDatabase();
-
-        String[] projection = {
-                HistoryContract.HistoryEntry.COLUMN_NAME_VIDEO_ID,
-                HistoryContract.HistoryEntry.COLUMN_NAME_URL,
-                HistoryContract.HistoryEntry.COLUMN_NAME_DESCRIPTION,
-                HistoryContract.HistoryEntry.COLUMN_NAME_TITLE
-        };
-
-//        String sortOrder =
-//                BaseColumns._ID + " DESC";
-//
-//        Cursor cursor = db.query(
-//                HistoryContract.HistoryEntry.TABLE_NAME,   // The table to query
-//                projection,             // The array of columns to return (pass null to get all)
-//                null,              // The columns for the WHERE clause
-//                null,          // The values for the WHERE clause
-//                null,                   // don't group the rows
-//                null,                   // don't filter by row groups
-//                sortOrder               // The sort order
-//        );
-
 
         String queryString =
                 "SELECT video_id,description,title,url  FROM history " +
@@ -164,9 +124,6 @@ public class HistoryActivity extends AppCompatActivity {
         List<VideoItem> items = new ArrayList<>();
         while (cursor.moveToNext()) {
             VideoItem videoItem = new VideoItem();
-//            long itemId = cursor.getLong(
-//                    cursor.getColumnIndexOrThrow(HistoryContract.HistoryEntry._ID));
-//            videoItem.setDb_id(itemId);
             String itemUrl = cursor.getString(
                     cursor.getColumnIndexOrThrow(HistoryContract.HistoryEntry.COLUMN_NAME_URL));
             videoItem.setThumbnailURL(itemUrl);

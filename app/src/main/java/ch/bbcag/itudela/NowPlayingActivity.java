@@ -2,10 +2,9 @@ package ch.bbcag.itudela;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.provider.BaseColumns;
 import android.support.design.widget.BottomNavigationView;
 
 import android.os.Bundle;
@@ -35,8 +34,6 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
     private YouTubePlayerView playerView;
     private String description, title, thumbnailURL, id;
 
-    private Intent search, history, nowplaying;
-
     private NavigationListener mOnNavigationItemSelectedListener;
 
     private HistoryDbHelper hDbHelper;
@@ -46,7 +43,7 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_now_playing);
 
-        mOnNavigationItemSelectedListener = new NavigationListener(search, history, nowplaying, getApplicationContext());
+        mOnNavigationItemSelectedListener = NavigationListener.getInstance(getApplicationContext());
 
         hDbHelper = new HistoryDbHelper(getApplicationContext());
 
@@ -58,10 +55,6 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
         playerView = (YouTubePlayerView) findViewById(R.id.player_view);
 
         latestVideo = new VideoItem();
-        latestVideo.setTitle(getIntent().getStringExtra("TITLE"));
-        latestVideo.setDescription(getIntent().getStringExtra("DESCRIPTION"));
-        latestVideo.setThumbnailURL(getIntent().getStringExtra("THUMBNAILURL"));
-        latestVideo.setId(getIntent().getStringExtra("VIDEO_ID"));
 
         if(getIntent().getStringExtra("VIDEO_ID") != null) {
 
@@ -76,19 +69,17 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
             thumbnailURL = getIntent().getStringExtra("THUMBNAILURL");
             title = getIntent().getStringExtra("TITLE");
             id = getIntent().getStringExtra("VIDEO_ID");
+
+            SharedPreferences preferences = getSharedPreferences("lastVideoWatched", MODE_PRIVATE);
+            preferences.edit().putString("id", id).apply();
         }else {
-
-            description = latestVideo.getDescription();
-            thumbnailURL = latestVideo.getThumbnailURL();
-            title = latestVideo.getTitle();
-            id = latestVideo.getId();
-
-
+            id = getSharedPreferences("lastVideoWatched", MODE_PRIVATE).getString("id", null);
+            
+            VideoItem latestvideo = getVideoByID(getApplicationContext() , id);
+            description = latestvideo.getDescription();
+            thumbnailURL = latestvideo.getThumbnailURL();
+            title = latestvideo.getTitle();
         }
-
-
-
-
 
         insertIntoHistory(id, title, thumbnailURL, description);
 
@@ -119,13 +110,13 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
             }
             else
             {
-                player.cueVideo(latestVideo.getId());
-                player.loadVideo(latestVideo.getId());
+                player.cueVideo(id);
+                player.loadVideo(id);
             }
         }
     }
 
-    public VideoItem getVideoByThumbURL(Context context, String video_id){
+    public VideoItem getVideoByID(Context context, String video_id){
         HistoryDbHelper hDbHelper = new HistoryDbHelper(context);
 
         SQLiteDatabase db = hDbHelper.getReadableDatabase();
@@ -139,7 +130,7 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
         };
 
         String selection = HistoryContract.HistoryEntry.COLUMN_NAME_VIDEO_ID + " = ?";
-        String[] selectionArgs = { id };
+        String[] selectionArgs = { video_id };
 
         String sortOrder =
                 HistoryContract.HistoryEntry.COLUMN_NAME_DATE + " DESC";
@@ -187,14 +178,13 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
 
     public void insertIntoHistory(String id, String title, String thumbnailURL, String description) {
 
-        if (getVideoByThumbURL(getApplicationContext(), id) == null) {
+        if (getVideoByID(getApplicationContext(), id) == null) {
 
             SQLiteDatabase db = hDbHelper.getWritableDatabase();
 
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             Date date = new Date();
 
-            // Create a new map of values, where column names are the keys
             ContentValues values = new ContentValues();
             values.put(HistoryContract.HistoryEntry.COLUMN_NAME_URL, thumbnailURL);
             values.put(HistoryContract.HistoryEntry.COLUMN_NAME_VIDEO_ID, id);
@@ -202,11 +192,6 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
             values.put(HistoryContract.HistoryEntry.COLUMN_NAME_TITLE, title);
             values.put(HistoryContract.HistoryEntry.COLUMN_NAME_DATE,dateFormat.format(date));
 
-            Log.v("dateformat", dateFormat.format(date));
-
-
-
-            // Insert the new row, returning the primary key value of the new row
             long newRowId = db.insert(HistoryContract.HistoryEntry.TABLE_NAME, null, values);
         }
     }

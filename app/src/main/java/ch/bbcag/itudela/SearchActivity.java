@@ -34,8 +34,6 @@ public class SearchActivity extends AppCompatActivity {
 
     private TextView mTextMessage;
 
-    private Intent search, history, nowplaying;
-
     private NavigationListener mOnNavigationItemSelectedListener;
 
 
@@ -44,7 +42,7 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        mOnNavigationItemSelectedListener = new NavigationListener(search, history, nowplaying, getApplicationContext());
+        mOnNavigationItemSelectedListener = NavigationListener.getInstance(getApplicationContext());
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
