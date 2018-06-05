@@ -2,12 +2,10 @@ package ch.bbcag.itudela;
 
 import android.content.Intent;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -17,11 +15,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import com.squareup.picasso.Picasso;
-
 import java.util.List;
-
 import ch.bbcag.itudela.helper.YoutubeConnector;
 import ch.bbcag.itudela.model.VideoItem;
 
@@ -29,11 +24,8 @@ public class SearchActivity extends AppCompatActivity {
 
     private EditText searchInput;
     private ListView videosFound;
-
     private Handler handler;
-
     private TextView mTextMessage;
-
     private NavigationListener mOnNavigationItemSelectedListener;
 
     @Override

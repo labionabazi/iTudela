@@ -5,7 +5,9 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HistoryActivity">
+    tools:context=".HistoryActivity"
+    android:persistent="true">
+
 
     <ListView
         android:id="@+id/videos_reload"

@@ -1,37 +1,25 @@
 package ch.bbcag.itudela;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.Intent;
-import android.graphics.Color;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.media.AudioManager;
 import android.support.design.widget.BottomNavigationView;
-
 import android.os.Bundle;
-import android.util.Log;
-
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
 import com.squareup.picasso.Picasso;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import ch.bbcag.itudela.db.HistoryContract;
 import ch.bbcag.itudela.db.HistoryDbHelper;
 import ch.bbcag.itudela.helper.YoutubeConnector;
@@ -44,10 +32,10 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
     private TextView mTextMessage;
     private YouTubePlayerView playerView;
     private String description, title, thumbnailURL, id;
-
     private NavigationListener mOnNavigationItemSelectedListener;
-
     private HistoryDbHelper hDbHelper;
+
+//    public static interface android.media.AudioManager.OnAudioFocusChangeListener
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +45,6 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
         mOnNavigationItemSelectedListener = NavigationListener.getInstance(getApplicationContext());
 
         mTextMessage = (TextView) findViewById(R.id.message);
-
-
 
         hDbHelper = new HistoryDbHelper(getApplicationContext());
 
@@ -129,6 +115,8 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
                                         boolean restored) {
         if (!restored) {
 
+//            setAudioFocus();
+
             if (getIntent().getStringExtra("VIDEO_ID") != null) {
 
                 player.cueVideo(getIntent().getStringExtra("VIDEO_ID"));
@@ -193,7 +181,6 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
             }
             cursor.close();
 
-
             if(!videoItem.getId().equals(id)){
                 return null;
             }else{
@@ -225,4 +212,13 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
             long newRowId = db.insert(HistoryContract.HistoryEntry.TABLE_NAME, null, values);
         }
     }
+
+//    public void setAudioFocus(YouTubePlayer player){
+//
+//        int result = requestAudioFocus(player,
+//                // Use the music stream.
+//                AudioManager.STREAM_MUSIC,
+//                // Request permanent focus.
+//                AudioManager.AUDIOFOCUS_GAIN);
+//    }
 }

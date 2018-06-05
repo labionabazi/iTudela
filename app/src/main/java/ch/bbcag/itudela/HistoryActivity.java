@@ -1,10 +1,8 @@
 package ch.bbcag.itudela;
-
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
-import android.provider.BaseColumns;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,16 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import ch.bbcag.itudela.db.HistoryContract;
 import ch.bbcag.itudela.db.HistoryDbHelper;
 import ch.bbcag.itudela.model.VideoItem;
