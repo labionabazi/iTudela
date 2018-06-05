@@ -36,7 +36,6 @@ public class SearchActivity extends AppCompatActivity {
 
     private NavigationListener mOnNavigationItemSelectedListener;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,13 +113,12 @@ public class SearchActivity extends AppCompatActivity {
                                     long id) {
                 Intent intent = new Intent(getApplicationContext(), NowPlayingActivity.class);
                 intent.putExtra("VIDEO_ID", searchResults.get(pos).getId());
-                intent.putExtra("DESCRIPTION",searchResults.get(pos).getDescription());
                 intent.putExtra("THUMBNAILURL",searchResults.get(pos).getThumbnailURL());
+                intent.putExtra("DESCRIPTION",searchResults.get(pos).getDescription());
                 intent.putExtra("TITLE",searchResults.get(pos).getTitle());
                 startActivity(intent);
             }
 
         });
     }
-
 }

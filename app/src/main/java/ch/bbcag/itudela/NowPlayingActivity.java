@@ -3,12 +3,22 @@ package ch.bbcag.itudela;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.Intent;
+import android.graphics.Color;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.BottomNavigationView;
 
 import android.os.Bundle;
 import android.util.Log;
+
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +26,7 @@ import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
+import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -45,9 +56,12 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
 
         mOnNavigationItemSelectedListener = NavigationListener.getInstance(getApplicationContext());
 
+        mTextMessage = (TextView) findViewById(R.id.message);
+
+
+
         hDbHelper = new HistoryDbHelper(getApplicationContext());
 
-        mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setSelectedItemId(R.id.navigation_music);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -56,7 +70,7 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
 
         latestVideo = new VideoItem();
 
-        if(getIntent().getStringExtra("VIDEO_ID") != null) {
+        if (getIntent().getStringExtra("VIDEO_ID") != null) {
 
             latestVideo = new VideoItem();
 
@@ -83,6 +97,18 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
 
         insertIntoHistory(id, title, thumbnailURL, description);
 
+        FrameLayout titelFrame = (FrameLayout) findViewById(R.id.titel);
+        View to_add = getLayoutInflater().inflate(R.layout.video_item, titelFrame, false);
+
+        ImageView videoThumbnail = (ImageView) to_add.findViewById(R.id.video_thumbnail);
+        TextView videoTitle = (TextView) to_add.findViewById(R.id.video_title);
+        TextView videoDescription = (TextView) to_add.findViewById(R.id.video_description);
+
+        Picasso.with(getApplicationContext()).load(thumbnailURL).into(videoThumbnail);
+        videoTitle.setText(title);
+        videoDescription.setText(description);
+        titelFrame.addView(to_add);
+
         playerView.initialize(YoutubeConnector.KEY, this);
     }
 
@@ -103,7 +129,7 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
                                         boolean restored) {
         if (!restored) {
 
-            if(getIntent().getStringExtra("VIDEO_ID") != null) {
+            if (getIntent().getStringExtra("VIDEO_ID") != null) {
 
                 player.cueVideo(getIntent().getStringExtra("VIDEO_ID"));
                 player.loadVideo(getIntent().getStringExtra("VIDEO_ID"));
@@ -116,7 +142,9 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
         }
     }
 
+
     public VideoItem getVideoByID(Context context, String video_id){
+
         HistoryDbHelper hDbHelper = new HistoryDbHelper(context);
 
         SQLiteDatabase db = hDbHelper.getReadableDatabase();
@@ -131,6 +159,7 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
 
         String selection = HistoryContract.HistoryEntry.COLUMN_NAME_VIDEO_ID + " = ?";
         String[] selectionArgs = { video_id };
+
 
         String sortOrder =
                 HistoryContract.HistoryEntry.COLUMN_NAME_DATE + " DESC";
@@ -163,6 +192,7 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
 
             }
             cursor.close();
+
 
             if(!videoItem.getId().equals(id)){
                 return null;
