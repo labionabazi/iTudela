@@ -5,27 +5,27 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchActivity"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    tools:context=".SearchActivity">
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical" >
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/title_search"
-        android:id="@+id/search_input"
-        android:singleLine="true"
-        />
+        android:orientation="vertical">
 
-    <ListView
-        android:id="@+id/videos_found"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:dividerHeight="5dp"
-        />
+        <EditText
+            android:id="@+id/search_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/title_search"
+            android:singleLine="true" />
+
+        <ListView
+            android:id="@+id/videos_found"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
     </LinearLayout>
+
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="0dp"

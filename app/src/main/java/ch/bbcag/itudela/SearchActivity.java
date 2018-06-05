@@ -60,7 +60,6 @@ public class SearchActivity extends AppCompatActivity {
         }
     };
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,7 +125,6 @@ public class SearchActivity extends AppCompatActivity {
                 return convertView;
             }
         };
-
         videosFound.setAdapter(adapter);
     }
 
@@ -138,12 +136,12 @@ public class SearchActivity extends AppCompatActivity {
                                     long id) {
                 Intent intent = new Intent(getApplicationContext(), NowPlayingActivity.class);
                 intent.putExtra("VIDEO_ID", searchResults.get(pos).getId());
-                intent.putExtra("DESCRIPTION",searchResults.get(pos).getDescription());
                 intent.putExtra("THUMBNAILURL",searchResults.get(pos).getThumbnailURL());
+                intent.putExtra("VideoTitle", searchResults.get(pos).getTitle());
+                intent.putExtra("DESCRIPTION",searchResults.get(pos).getDescription());
                 startActivity(intent);
             }
 
         });
     }
-
 }

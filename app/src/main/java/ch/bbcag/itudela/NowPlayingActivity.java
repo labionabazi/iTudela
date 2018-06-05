@@ -1,11 +1,18 @@
 package ch.bbcag.itudela;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,8 +20,10 @@ import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
+import com.squareup.picasso.Picasso;
 
 import ch.bbcag.itudela.helper.YoutubeConnector;
+import ch.bbcag.itudela.model.VideoItem;
 
 public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener {
 
@@ -53,16 +62,28 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_now_playing);
 
-        mTextMessage = (TextView) findViewById(R.id.message);
+        mTextMessage = (TextView)findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setSelectedItemId(R.id.navigation_music);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         playerView = (YouTubePlayerView)findViewById(R.id.player_view);
 
-        description = getIntent().getStringExtra("DESCRIPTION");
         thumbnailURL = getIntent().getStringExtra("THUMBNAILURL");
-        title = getIntent().getStringExtra("TITLE");
+        description = getIntent().getStringExtra("DESCRIPTION");
+        title = getIntent().getStringExtra("VideoTitle");
+
+        FrameLayout titelFrame = (FrameLayout) findViewById(R.id.titel);
+        View to_add = getLayoutInflater().inflate(R.layout.video_item, titelFrame, false);
+
+        ImageView videoThumbnail = (ImageView)to_add.findViewById(R.id.video_thumbnail);
+        TextView videoTitle = (TextView)to_add.findViewById(R.id.video_title);
+        TextView videoDescription = (TextView)to_add.findViewById(R.id.video_description);
+
+        Picasso.with(getApplicationContext()).load(thumbnailURL).into(videoThumbnail);
+        videoTitle.setText(title);
+        videoDescription.setText(description);
+        titelFrame.addView(to_add);
 
         playerView.initialize(YoutubeConnector.KEY, this);
     }
