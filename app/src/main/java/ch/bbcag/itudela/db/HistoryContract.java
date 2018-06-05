@@ -2,6 +2,8 @@ package ch.bbcag.itudela.db;
 
 import android.provider.BaseColumns;
 
+import java.util.Date;
+
 public class HistoryContract {
 
     private HistoryContract(){}
@@ -12,6 +14,7 @@ public class HistoryContract {
         public static final String COLUMN_NAME_VIDEO_ID = "video_id";
         public static final String COLUMN_NAME_TITLE = "title";
         public static final String COLUMN_NAME_DESCRIPTION = "description";
+        public static final String COLUMN_NAME_DATE = "date";
     }
 
 }

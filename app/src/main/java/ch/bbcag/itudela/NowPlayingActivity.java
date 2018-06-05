@@ -6,11 +6,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,12 +18,14 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import ch.bbcag.itudela.db.HistoryContract;
 import ch.bbcag.itudela.db.HistoryDbHelper;
 import ch.bbcag.itudela.helper.YoutubeConnector;
 import ch.bbcag.itudela.model.VideoItem;
-
-import static java.security.AccessController.getContext;
 
 public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener {
 
@@ -124,24 +125,24 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
         }
     }
 
-    public VideoItem getVideoByThumbURL(Context context, String url){
+    public VideoItem getVideoByThumbURL(Context context, String video_id){
         HistoryDbHelper hDbHelper = new HistoryDbHelper(context);
 
         SQLiteDatabase db = hDbHelper.getReadableDatabase();
 
         String[] projection = {
-                BaseColumns._ID,
+                HistoryContract.HistoryEntry._ID,
                 HistoryContract.HistoryEntry.COLUMN_NAME_VIDEO_ID,
                 HistoryContract.HistoryEntry.COLUMN_NAME_URL,
                 HistoryContract.HistoryEntry.COLUMN_NAME_DESCRIPTION,
                 HistoryContract.HistoryEntry.COLUMN_NAME_TITLE
         };
 
-        String selection = HistoryContract.HistoryEntry.COLUMN_NAME_URL + " = ?";
-        String[] selectionArgs = { url };
+        String selection = HistoryContract.HistoryEntry.COLUMN_NAME_VIDEO_ID + " = ?";
+        String[] selectionArgs = { id };
 
         String sortOrder =
-                BaseColumns._ID + " DESC";
+                HistoryContract.HistoryEntry.COLUMN_NAME_DATE + " DESC";
 
         Cursor cursor = db.query(
                 HistoryContract.HistoryEntry.TABLE_NAME,   // The table to query
@@ -156,9 +157,6 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
         try {
             VideoItem videoItem = new VideoItem();
             while (cursor.moveToNext()) {
-                long itemId = cursor.getLong(
-                        cursor.getColumnIndexOrThrow(BaseColumns._ID));
-                videoItem.setDb_id(itemId);
                 String itemUrl = cursor.getString(
                         cursor.getColumnIndexOrThrow(HistoryContract.HistoryEntry.COLUMN_NAME_URL));
                 videoItem.setThumbnailURL(itemUrl);
@@ -175,7 +173,12 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
             }
             cursor.close();
 
-            return videoItem;
+            if(!videoItem.getId().equals(id)){
+                return null;
+            }else{
+                return videoItem;
+            }
+
         }catch (Exception e){
             e.printStackTrace();
             return null;
@@ -184,9 +187,12 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
 
     public void insertIntoHistory(String id, String title, String thumbnailURL, String description) {
 
-        if (getVideoByThumbURL(getApplicationContext(), thumbnailURL) == null) {
+        if (getVideoByThumbURL(getApplicationContext(), id) == null) {
 
             SQLiteDatabase db = hDbHelper.getWritableDatabase();
+
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            Date date = new Date();
 
             // Create a new map of values, where column names are the keys
             ContentValues values = new ContentValues();
@@ -194,6 +200,10 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
             values.put(HistoryContract.HistoryEntry.COLUMN_NAME_VIDEO_ID, id);
             values.put(HistoryContract.HistoryEntry.COLUMN_NAME_DESCRIPTION, description);
             values.put(HistoryContract.HistoryEntry.COLUMN_NAME_TITLE, title);
+            values.put(HistoryContract.HistoryEntry.COLUMN_NAME_DATE,dateFormat.format(date));
+
+            Log.v("dateformat", dateFormat.format(date));
+
 
 
             // Insert the new row, returning the primary key value of the new row

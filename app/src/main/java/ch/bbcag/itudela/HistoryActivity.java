@@ -63,7 +63,7 @@ public class HistoryActivity extends AppCompatActivity {
 
         updateVideosFound();
 
-//        loadYouTubeVideo();
+        //loadYouTubeVideo();
 
         addClickListener();
 
@@ -84,9 +84,9 @@ public class HistoryActivity extends AppCompatActivity {
                 if (convertView == null) {
                     convertView = getLayoutInflater().inflate(R.layout.video_item, parent, false);
                 }
-                ImageView thumbnail = (ImageView) convertView.findViewById(R.id.video_thumbnail);
-                TextView title = (TextView) convertView.findViewById(R.id.video_title);
-                TextView description = (TextView) convertView.findViewById(R.id.video_description);
+                ImageView thumbnail = (ImageView)convertView.findViewById(R.id.video_thumbnail);
+                TextView title = (TextView)convertView.findViewById(R.id.video_title);
+                TextView description = (TextView)convertView.findViewById(R.id.video_description);
 
                 VideoItem searchResult = VideoList.get(position);
 
@@ -133,35 +133,40 @@ public class HistoryActivity extends AppCompatActivity {
 
     public List<VideoItem> getVideoFromDB() {
 
-        SQLiteDatabase db = hDbHelper.getReadableDatabase();
+        SQLiteDatabase db = hDbHelper.getWritableDatabase();
 
         String[] projection = {
-                BaseColumns._ID,
                 HistoryContract.HistoryEntry.COLUMN_NAME_VIDEO_ID,
                 HistoryContract.HistoryEntry.COLUMN_NAME_URL,
                 HistoryContract.HistoryEntry.COLUMN_NAME_DESCRIPTION,
                 HistoryContract.HistoryEntry.COLUMN_NAME_TITLE
         };
 
-        String sortOrder =
-                BaseColumns._ID + " DESC";
+//        String sortOrder =
+//                BaseColumns._ID + " DESC";
+//
+//        Cursor cursor = db.query(
+//                HistoryContract.HistoryEntry.TABLE_NAME,   // The table to query
+//                projection,             // The array of columns to return (pass null to get all)
+//                null,              // The columns for the WHERE clause
+//                null,          // The values for the WHERE clause
+//                null,                   // don't group the rows
+//                null,                   // don't filter by row groups
+//                sortOrder               // The sort order
+//        );
 
-        Cursor cursor = db.query(
-                HistoryContract.HistoryEntry.TABLE_NAME,   // The table to query
-                projection,             // The array of columns to return (pass null to get all)
-                null,              // The columns for the WHERE clause
-                null,          // The values for the WHERE clause
-                null,                   // don't group the rows
-                null,                   // don't filter by row groups
-                sortOrder               // The sort order
-        );
+
+        String queryString =
+                "SELECT video_id,description,title,url  FROM history " +
+                        "ORDER BY date desc";
+        Cursor cursor = db.rawQuery(queryString,null);
 
         List<VideoItem> items = new ArrayList<>();
         while (cursor.moveToNext()) {
             VideoItem videoItem = new VideoItem();
-            long itemId = cursor.getLong(
-                    cursor.getColumnIndexOrThrow(BaseColumns._ID));
-            videoItem.setDb_id(itemId);
+//            long itemId = cursor.getLong(
+//                    cursor.getColumnIndexOrThrow(HistoryContract.HistoryEntry._ID));
+//            videoItem.setDb_id(itemId);
             String itemUrl = cursor.getString(
                     cursor.getColumnIndexOrThrow(HistoryContract.HistoryEntry.COLUMN_NAME_URL));
             videoItem.setThumbnailURL(itemUrl);

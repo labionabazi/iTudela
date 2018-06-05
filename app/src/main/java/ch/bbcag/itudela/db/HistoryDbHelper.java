@@ -15,6 +15,7 @@ public class HistoryDbHelper extends SQLiteOpenHelper{
                     HistoryContract.HistoryEntry.COLUMN_NAME_VIDEO_ID + " TEXT," +
                     HistoryContract.HistoryEntry.COLUMN_NAME_TITLE + " TEXT," +
                     HistoryContract.HistoryEntry.COLUMN_NAME_DESCRIPTION + " TEXT," +
+                    HistoryContract.HistoryEntry.COLUMN_NAME_DATE + " DATE," +
                     HistoryContract.HistoryEntry.COLUMN_NAME_URL + " TEXT)";
 
 
@@ -33,12 +34,14 @@ public class HistoryDbHelper extends SQLiteOpenHelper{
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        db.execSQL(SQL_DELETE_ENTRIES);
+        db.execSQL(SQL_CREATE_ENTRIES);
         // mit For
     }
 
-    public void deleteDB(SQLiteDatabase db){
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL(SQL_DELETE_ENTRIES);
         db.execSQL(SQL_CREATE_ENTRIES);
     }
-
 }
