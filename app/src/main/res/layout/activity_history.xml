@@ -8,7 +8,7 @@
     tools:context=".HistoryActivity">
 
     <ListView
-        android:id="@+id/videos_found"
+        android:id="@+id/videos_reload"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
