@@ -1,12 +1,14 @@
 package ch.bbcag.itudela;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
 import android.support.design.widget.BottomNavigationView;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -44,9 +46,11 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
 
         mOnNavigationItemSelectedListener = NavigationListener.getInstance(getApplicationContext());
 
+        try{
         mTextMessage = (TextView) findViewById(R.id.message);
 
         hDbHelper = new HistoryDbHelper(getApplicationContext());
+
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setSelectedItemId(R.id.navigation_music);
@@ -96,6 +100,25 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
         titelFrame.addView(to_add);
 
         playerView.initialize(YoutubeConnector.KEY, this);
+    }catch (Exception e){
+            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+            builder.setTitle("Fehlermeldung");
+
+            builder
+                    .setMessage("Wähle bitte zuerst einen Titel aus!")
+                    .setCancelable(false)
+                    .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,int id) {
+                            // if this button is clicked, close
+                            // current activity
+                            dialog.cancel();
+                        }
+                    });
+
+            // create alert dialog
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        }
     }
 
     @Override
@@ -114,8 +137,6 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player,
                                         boolean restored) {
         if (!restored) {
-
-//            setAudioFocus();
 
             if (getIntent().getStringExtra("VIDEO_ID") != null) {
 
@@ -212,13 +233,4 @@ public class NowPlayingActivity extends YouTubeBaseActivity implements YouTubePl
             long newRowId = db.insert(HistoryContract.HistoryEntry.TABLE_NAME, null, values);
         }
     }
-
-//    public void setAudioFocus(YouTubePlayer player){
-//
-//        int result = requestAudioFocus(player,
-//                // Use the music stream.
-//                AudioManager.STREAM_MUSIC,
-//                // Request permanent focus.
-//                AudioManager.AUDIOFOCUS_GAIN);
-//    }
 }
