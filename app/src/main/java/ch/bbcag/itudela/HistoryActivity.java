@@ -108,7 +108,7 @@ public class HistoryActivity extends AppCompatActivity {
 
     public List<VideoItem> getVideoFromDB() {
 
-        SQLiteDatabase db = hDbHelper.getWritableDatabase();
+        SQLiteDatabase db = hDbHelper.getReadableDatabase();
 
         String queryString =
                 "SELECT video_id,description,title,url  FROM history " +
